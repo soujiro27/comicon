@@ -1,0 +1,99 @@
+@media screen and (min-width: 768px) {
+	#mapa_content {width:100%; height:450px;}
+	#modaletaparol .modal-dialog  {width:45%;}
+	.delimitado {  height: 350px !important; overflow: scroll;}​			
+}
+
+
+#modaletaparol label#parolrol,label#parolpro,label#paroleta,label#parolbot,label#parolest{
+	text-align: right !important;
+}
+
+
+div#paroldos, label#parolbot, label#paroleta, div#paroletadiv, label#parolest, div#paroldesta, label#parolpro, div#parolprodiv{
+	margin: 3% 0 0 0 !important;
+}
+
+div#estatus{
+	display: none;
+}
+
+label#parolbot{
+	width: 17% !important
+}
+
+div#masroleta{
+	min-height: 662px !important;
+}
+
+table#tabla2{
+	margin-bottom: 0 !important;
+
+}
+
+table#control,  table#tabla2, table#remitente, td{
+	text-align: left !important;
+	
+}
+
+table#footer{
+	border-style: none !important;
+}
+
+table#footer td{
+	border: none !important;
+	background: none !important;
+	text-align: center !important;
+}
+
+#idrepla table{max-width: 600px !important;}
+
+div.tipoestaus, div.tipomodu{
+	margin: 10px 0 0 0 !important;
+}
+
+.imag{
+	width: 31% !important; 
+}
+
+.imag img{
+	margin: 10px !important;
+	width: 105% !important;
+}
+
+.moles{
+
+	width: 62% !important;
+}
+
+.moles h1{
+	margin: 0 0 0 10%;
+    text-align: justify !important;
+    width: 86% !important;
+}
+
+.uno{
+	margin: 10% 0 0 10% !important;
+	line-height: 1.7 !important;
+}
+
+
+div.confrontaxs2{
+	width: 10.667% !important;
+}
+
+label.confrontaxs1{
+	width: 12.333% !important;
+}
+
+.cur{
+	cursor:pointer !important;
+}
+
+.center{
+	text-align: center !important;
+}
+
+.paddclas{
+	padding: 0 27px 0 0 !important;
+}
