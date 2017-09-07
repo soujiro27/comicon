@@ -13,7 +13,7 @@
 	require 'hector.php';
 	require 'arian.php';
 	require 'cota.php';
-	//require 'carlos.php';
+	require 'carlos.php';
 	
 
 	define("MAIN_ACCESS", true);
