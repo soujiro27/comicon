@@ -6377,16 +6377,16 @@ $app->get('/lstUsuariosExternosByEntidadExt/:laArea', function($laArea)  use ($a
 		$titular     = $request->post('txtTitularArea');
 		$estatus     = $request->post('txtEstatus');
 
-		//echo " oper>>$oper idPuesto>>$idPuesto  idArea>>$idArea  rpe>>$rpe  nombre>>$nombre  paterno>>$paterno   materno>>$materno   puesto>>$puesto   titular>>$titular estatus>>$estatus";
+		//echo " oper>>$oper idPuesto>>$idPuesto  idArea>>$idArea  rpe>>$rpe  saludo>>$saludo  nombre>>$nombre  paterno>>$paterno  materno>>$materno  siglas>>$siglas  recepcion>>$recepcion  puesto>>$puesto  titular>>$titular estatus>>$estatus";
 
 		try
 		{
 			if($oper=='INS')
 			{
-				$sql="INSERT INTO sia_PuestosJuridico (idArea, rpe, saludo, nombre, paterno, materno, siglas, recepcion, titular, puesto, usrAlta, fAlta) VALUES (:idArea, :rpe, :saludo, :nombre, :paterno, :materno, :siglas, :recepcion, :puesto, :titular, :usrAlta, GETDATE() );";
+				$sql="INSERT INTO sia_PuestosJuridico (idArea, rpe, saludo, nombre, paterno, materno, siglas, recepcion, titular, puesto, usrAlta, fAlta) VALUES (:idArea, :rpe, :saludo, :nombre, :paterno, :materno, :siglas, :recepcion, :titular, :puesto, :usrAlta, GETDATE() );";
 				$dbQuery = $db->prepare($sql);
 
-				$dbQuery->execute(array(':idArea'=>$idArea, ':rpe'=>$rpe, ':saludo'=>$saludo, ':nombre'=>$nombre, ':paterno'=>$paterno, ':materno'=>$materno, ':siglas'=>$siglas, ':recepcion'=>$recepcion, ':puesto'=>$puesto, ':titular'=>$titular, ':usrAlta'=>$usrActual ));
+				$dbQuery->execute(array(':idArea'=>$idArea, ':rpe'=>$rpe, ':saludo'=>$saludo, ':nombre'=>$nombre, ':paterno'=>$paterno, ':materno'=>$materno, ':siglas'=>$siglas, ':recepcion'=>$recepcion, ':titular'=>$titular, ':puesto'=>$puesto, ':usrAlta'=>$usrActual ));
 			
 			}else{
 			
@@ -6414,7 +6414,7 @@ $app->get('/lstUsuariosExternosByEntidadExt/:laArea', function($laArea)  use ($a
 		$usrActual = $_SESSION["idUsuario"];
 		$global = $_SESSION["usrGlobal"];
 
-		$sql="SELECT fj.idFolioJuridico, fj.idCuenta, fj.idArea, a.nombre area, fj.idTipoDocumento, td.nombre tipoDocumento, fj.idSubTipoDocumento, std.nombre subTipoDocumento, fj.folio, fj.observaciones, fj.estado, fj.usrAutorizador, fj.estatus FROM sia_FoliosJuridico fj left join sia_areas a on a.idArea = fj.idArea left join sia_tiposdocumentos td on td.idTipoDocto = fj.idTipoDocumento and td.tipo = 'JURIDICO' left join sia_catSubTiposDocumentos std on std.idSubTipoDocumento = fj.idSubTipoDocumento ORDER BY fj.folio DESC;";
+		$sql="SELECT fj.idFolioJuridico, fj.idCuenta, fj.idArea, a.nombre area, fj.idTipoDocumento, td.nombre tipoDocumento, fj.folio, fj.observaciones, fj.estado, fj.usrAutorizador, fj.estatus FROM sia_FoliosJuridico fj left join sia_areas a on a.idArea = fj.idArea left join sia_tiposdocumentos td on td.idTipoDocto = fj.idTipoDocumento and td.tipo = 'JURIDICO' ORDER BY fj.folio DESC;";
 
 		$dbQuery = $db->prepare($sql);
 		$dbQuery->execute();
@@ -6428,19 +6428,19 @@ $app->get('/lstUsuariosExternosByEntidadExt/:laArea', function($laArea)  use ($a
 	})->name('catFoliosJuridico');
 
 
-	$app->get('/obtenerFolioJuridico/:folio', function($folio) use($app, $db) {
+	$app->get('/obtenerFolioJuridico/:idFolioJuridico', function($idFolioJuridico) use($app, $db) {
 
 		try{
 
-			$sql = "SELECT fj.idFolioJuridico, fj.idCuenta, fj.idArea, fj.idTipoDocumento, fj.idSubtipoDocumento , fj.folio, isnull(fj.observaciones,'') observaciones , fj.estado, fj.usrAutorizador, CONCAT(u.nombre,' ',u.paterno,' ',u.materno) nombreAutorizador, fj.estatus FROM sia_FoliosJuridico fj left join sia_usuarios u ON u.idUsuario = fj.usrAutorizador WHERE folio=:folio;";
+			$sql = "SELECT fj.idFolioJuridico, fj.idCuenta, fj.idArea, fj.idTipoDocumento, fj.folio, isnull(fj.observaciones,'') observaciones , fj.estado, fj.usrAutorizador, CONCAT(u.nombre,' ',u.paterno,' ',u.materno) nombreAutorizador, fj.estatus FROM sia_FoliosJuridico fj left join sia_usuarios u ON u.idUsuario = fj.usrAutorizador WHERE fj.idFolioJuridico=:idFolioJuridico;";
 
 			$dbQuery = $db->prepare($sql);  
-			$dbQuery->execute(array(':folio'=> $folio));
+			$dbQuery->execute(array(':idFolioJuridico'=> $idFolioJuridico));
 
 			$result = $dbQuery->fetch(PDO::FETCH_ASSOC);
 
 			if(!$result){
-					$app->halt(404, "NO SE ENCONTRÓ INFORMACIÓN DEL FOLIO JURÍDICO INDICADO. " + $folio);
+					$app->halt(404, "NO SE ENCONTRÓ INFORMACIÓN DEL FOLIO JURÍDICO INDICADO. " + $idFolioJuridico);
 			}else{
 				echo json_encode($result);
 			} 
@@ -6450,14 +6450,14 @@ $app->get('/lstUsuariosExternosByEntidadExt/:laArea', function($laArea)  use ($a
 		}
 	});
 
-	$app->get('/validaExisteFolioJuridico/:folio', function($folio) use($app, $db) {
+	$app->get('/validaExisteFolioJuridico/:idDocumento/:folio', function($idDocumento, $folio) use($app, $db) {
 
 		try{
 
-			$sql = "SELECT folio FROM sia_FoliosJuridico WHERE folio=:folio ;";
+			$sql = "SELECT folio FROM sia_FoliosJuridico WHERE idTipoDocumento =:idDocumento AND folio=:folio ;";
 
 			$dbQuery = $db->prepare($sql);  
-			$dbQuery->execute(array(':folio'=> $folio ));
+			$dbQuery->execute(array(':idDocumento'=> $idDocumento, ':folio'=> $folio));
 
 			$result = $dbQuery->fetch(PDO::FETCH_ASSOC);
 			echo json_encode($result);
@@ -6468,17 +6468,17 @@ $app->get('/lstUsuariosExternosByEntidadExt/:laArea', function($laArea)  use ($a
 		}
 	});
 
-	$app->get('/guardar/FolioJuridicoReservados/:folio', function($folio)  use($app, $db) {
+	$app->get('/guardar/FolioJuridicoReservados/:idTipoDocumento/:folio', function($idTipoDocumento, $folio)  use($app, $db) {
 		$usrActual = $_SESSION ["idUsuario"];
 		$cuenta = $_SESSION ["idCuentaActual"];
 		$estado = "RESERVADO";
 
 		try
 		{
-			$sql="INSERT INTO sia_FoliosJuridico (idCuenta, folio, estado, usrAlta) VALUES (:idCuenta, :folio, :estado, :usrAlta);";
+			$sql="INSERT INTO sia_FoliosJuridico (idCuenta, idTipoDocumento, folio, estado, usrAlta) VALUES (:idCuenta, :idTipoDocumento, :folio, :estado, :usrAlta);";
 			$dbQuery = $db->prepare($sql);
 
-			$dbQuery->execute(array(':idCuenta'=>$cuenta, ':folio'=>$folio, ':estado'=>$estado, ':usrAlta'=>$usrActual ));
+			$dbQuery->execute(array(':idCuenta'=>$cuenta, ':idTipoDocumento'=>$idTipoDocumento, ':folio'=>$folio, ':estado'=>$estado, ':usrAlta'=>$usrActual ));
 
 			echo("OK");
 
@@ -6498,30 +6498,30 @@ $app->get('/lstUsuariosExternosByEntidadExt/:laArea', function($laArea)  use ($a
 		$idFolioJuridico    = $request->post('txtIdFolioJuridico');
 		$idArea             = $request->post('txtIdArea');
 		$idTipoDocumento    = $request->post('txtIdDocumento');
-		$idSubTipoDocumento = $request->post('txtIdSubDocumento');
+		//$idSubTipoDocumento = $request->post('txtIdSubDocumento');
 		$folio              = $request->post('txtFolio');
 		$observaciones      = $request->post('txtObservaciones');
 		$estado             = $request->post('txtEstado');
 		$usrAutorizador     = $request->post('txtUsrAutorizador');
 		$estatus            = $request->post('txtEstatus');
 
-		//echo "oper>> $oper idFolioJuridico>> $idFolioJuridico idArea>> $idArea idTipoDocumento>> $idTipoDocumento idSubTipoDocumento>> $idSubTipoDocumento folio>> $folio observaciones>> $observaciones estado>> $estado usrAutorizador>> $usrAutorizador estatus>> $estatus";
+		//echo "oper>> $oper idFolioJuridico>> $idFolioJuridico idArea>> $idArea idTipoDocumento>> $idTipoDocumento folio>> $folio observaciones>> $observaciones estado>> $estado usrAutorizador>> $usrAutorizador estatus>> $estatus";
 
 		try
 		{
 			if($oper=='INS')
 			{
-				$sql="INSERT INTO sia_FoliosJuridico (idCuenta, idArea, idTipoDocumento, idSubTipoDocumento, folio, observaciones, usrAutorizador, usrAlta) VALUES (:idCuenta, :idArea, :idTipoDocumento, :idSubTipoDocumento, :folio, :observaciones, :usrAutorizador, :usrAlta);";
+				$sql="INSERT INTO sia_FoliosJuridico (idCuenta, idArea, idTipoDocumento, folio, observaciones, usrAutorizador, usrAlta) VALUES (:idCuenta, :idArea, :idTipoDocumento, :folio, :observaciones, :usrAutorizador, :usrAlta);";
 				$dbQuery = $db->prepare($sql);
 
-				$dbQuery->execute(array(':idCuenta'=>$cuenta,':idArea'=>$idArea, ':idTipoDocumento'=>$idTipoDocumento, ':idSubTipoDocumento'=>$idSubTipoDocumento, ':folio'=>$folio, ':observaciones'=>$observaciones, ':usrAutorizador'=>$usrAutorizador, ':usrAlta'=>$usrActual ));
+				$dbQuery->execute(array(':idCuenta'=>$cuenta,':idArea'=>$idArea, ':idTipoDocumento'=>$idTipoDocumento, ':folio'=>$folio, ':observaciones'=>$observaciones, ':usrAutorizador'=>$usrAutorizador, ':usrAlta'=>$usrActual ));
 			
 			}else{
 			
-				$sql="UPDATE sia_FoliosJuridico SET idArea=:idArea, idTipoDocumento=:idTipoDocumento, idSubTipoDocumento=:idSubTipoDocumento, folio=:folio, observaciones=:observaciones, estado=:estado, usrAutorizador=:usrAutorizador, usrModificacion=:usrModificacion, fModificacion=GETDATE(), estatus=:estatus WHERE idFolioJuridico=:idFolioJuridico;";
+				$sql="UPDATE sia_FoliosJuridico SET idArea=:idArea, idTipoDocumento=:idTipoDocumento, folio=:folio, observaciones=:observaciones, estado=:estado, usrAutorizador=:usrAutorizador, usrModificacion=:usrModificacion, fModificacion=GETDATE(), estatus=:estatus WHERE idFolioJuridico=:idFolioJuridico;";
 				$dbQuery = $db->prepare($sql);
 
-				$dbQuery->execute(array(':idArea'=>$idArea, ':idTipoDocumento'=>$idTipoDocumento, ':idSubTipoDocumento'=>$idSubTipoDocumento, ':folio'=>$folio, ':observaciones'=>$observaciones, ':estado'=>$estado, ':usrAutorizador'=>$usrAutorizador, ':usrModificacion'=>$usrActual, ':estatus'=>$estatus, ':idFolioJuridico'=>$idFolioJuridico ));
+				$dbQuery->execute(array(':idArea'=>$idArea, ':idTipoDocumento'=>$idTipoDocumento, ':folio'=>$folio, ':observaciones'=>$observaciones, ':estado'=>$estado, ':usrAutorizador'=>$usrAutorizador, ':usrModificacion'=>$usrActual, ':estatus'=>$estatus, ':idFolioJuridico'=>$idFolioJuridico ));
 			}
 
 		}catch (DBException $e) {
@@ -6591,14 +6591,14 @@ $app->get('/lstUsuariosExternosByEntidadExt/:laArea', function($laArea)  use ($a
 		}
 	});
 
-	$app->get('/recuperaUltimoFolioJuridico', function() use($app, $db) {
+	$app->get('/recuperaUltimoFolioJuridico/:idTipoDocumento', function($idTipoDocumento) use($app, $db) {
 
 		try{
 			
-			$sql = "SELECT folio, fAlta fechaFolio FROM sia_FoliosJuridico WHERE folio = (SELECT max(folio) folio FROM sia_FoliosJuridico WHERE estatus = 'ACTIVO');";
+			$sql = "SELECT folio, convert(VARCHAR, convert(date, fAlta,101),101) fechaFolio FROM sia_FoliosJuridico WHERE folio = (SELECT max(folio) folio FROM sia_FoliosJuridico WHERE  idTipoDocumento = :idTipoDocumento and estatus = 'ACTIVO');";
 
 			$dbQuery = $db->prepare($sql);
-			$dbQuery->execute();
+			$dbQuery->execute( array(":idTipoDocumento"=>$idTipoDocumento) );
 			$result = $dbQuery->fetch(PDO::FETCH_ASSOC);
 
 			if(!$result){

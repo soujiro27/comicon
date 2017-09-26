@@ -193,6 +193,8 @@
 
 				var sLiga = '/validaExistePuestoJuridico/' + document.all.txtRpe.value;
 
+				alert("Paso la validación y el valor de operacion es: " + document.all.txtOperacion.value);
+
 				$.ajax({
 					type: 'GET', url: sLiga ,
 					success: function(response) {			
@@ -201,6 +203,7 @@
 						if (document.all.txtOperacion.value == "INS"){
 
 							if (typeof obj.rpe == "undefined"){
+								alert("guardará eñ registro");
 
 								document.all.txtIdPuesto.disabled = false;
 								document.all.formulario.submit();
